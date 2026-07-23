@@ -16,8 +16,9 @@ class ApiController extends Controller
      */
     public function login(Request $request)
     {
-        $email = strtolower(trim($request->input('email', '')));
-        $password = $request->input('password', '');
+        $input = $request->isJson() ? $request->json()->all() : $request->all();
+        $email = strtolower(trim($input['email'] ?? ''));
+        $password = $input['password'] ?? '';
 
         if (empty($email) || empty($password)) {
             return response()->json([
@@ -69,8 +70,9 @@ class ApiController extends Controller
      */
     public function register(Request $request)
     {
-        $email = strtolower(trim($request->input('email', '')));
-        $password = $request->input('password', '');
+        $input = $request->isJson() ? $request->json()->all() : $request->all();
+        $email = strtolower(trim($input['email'] ?? ''));
+        $password = $input['password'] ?? '';
 
         if (empty($email) || strlen($password) < 6) {
             return response()->json([
@@ -158,15 +160,16 @@ class ApiController extends Controller
      */
     public function query(Request $request)
     {
-        $table = $request->input('table');
-        $action = $request->input('action', 'select'); // select, insert, update, delete, upsert
-        $where = $request->input('where', []);
-        $orders = $request->input('orders', []);
-        $limit = $request->input('limit', null);
-        $single = $request->input('single', false);
-        $maybeSingle = $request->input('maybeSingle', false);
-        $data = $request->input('data', []);
-        $options = $request->input('options', []);
+        $input = $request->isJson() ? $request->json()->all() : $request->all();
+        $table = $input['table'] ?? null;
+        $action = $input['action'] ?? 'select';
+        $where = $input['where'] ?? [];
+        $orders = $input['orders'] ?? [];
+        $limit = $input['limit'] ?? null;
+        $single = $input['single'] ?? false;
+        $maybeSingle = $input['maybeSingle'] ?? false;
+        $data = $input['data'] ?? [];
+        $options = $input['options'] ?? [];
 
         if (empty($table)) {
             return response()->json(['data' => null, 'error' => ['message' => 'Table name is required.']]);
@@ -306,10 +309,9 @@ class ApiController extends Controller
 
         $file = $request->file('file');
         $filename = 'avatar_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-        $disk = config('filesystems.default');
-
-        $path = $file->storeAs('avatars', $filename, $disk);
-        $publicUrl = Storage::disk($disk)->url($path);
+        
+        $path = $file->storeAs('avatars', $filename, 'public');
+        $publicUrl = asset('storage/' . $path);
 
         return response()->json([
             'data' => ['publicUrl' => $publicUrl],
