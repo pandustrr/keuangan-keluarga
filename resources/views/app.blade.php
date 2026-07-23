@@ -679,9 +679,10 @@ async function doLogin(){
   const pass=$('loginPass').value;
   if(!email.includes('@')||!pass){$('loginMsg').textContent='Isi email & password dulu';return;}
   $('loginMsg').textContent='Masuk...';
-  const {error}=await db.auth.signInWithPassword({email,password:pass});
-  if(error){$('loginMsg').textContent='Gagal masuk: '+error.message+'. Kalau baru pertama kali, klik "Daftar".';return;}
+  const res=await db.auth.signInWithPassword({email,password:pass});
+  if(res.error){$('loginMsg').textContent='Gagal masuk: '+(res.error.message||res.error)+'. Kalau baru pertama kali, klik "Daftar".';return;}
   $('loginMsg').textContent='';
+  if(res.session) handleSession(res.session);
 }
 async function forgotPass(){
   const email=$('loginEmail').value.trim().toLowerCase();
@@ -698,9 +699,10 @@ async function doRegister(){
   $('loginMsg').textContent='Mendaftar...';
   const {error}=await db.auth.signUp({email,password:pass});
   if(error){$('loginMsg').textContent='Gagal daftar: '+error.message;return;}
-  const {error:e2}=await db.auth.signInWithPassword({email,password:pass});
-  if(e2){$('loginMsg').innerHTML='Akun sudah dibuat. Sekarang klik tombol <b>Masuk</b>.';return;}
+  const res=await db.auth.signInWithPassword({email,password:pass});
+  if(res.error){$('loginMsg').innerHTML='Akun sudah dibuat. Sekarang klik tombol <b>Masuk</b>.';return;}
   $('loginMsg').textContent='';
+  if(res.session) handleSession(res.session);
 }
 async function logout(){await db.auth.signOut();location.reload();}
 
