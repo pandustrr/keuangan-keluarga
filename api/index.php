@@ -1,4 +1,5 @@
 <?php
 
-// Forward requests to Laravel front controller
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+
 require __DIR__ . '/../public/index.php';
