@@ -22,16 +22,16 @@ class DatabaseSeeder extends Seeder
         Family::updateOrCreate(
             ['id' => $familyId],
             [
-                'nama' => 'Keluarga Utama',
+                'nama' => 'Keluarga Nuril Khaira',
                 'cutoff_day' => 1,
             ]
         );
 
         // 2. Create Default Members
         $members = [
-            ['area_key' => 'keluarga', 'nama' => 'Keluarga', 'tipe' => 'keluarga', 'email' => 'suami@keluarga.com', 'family_id' => $familyId, 'urutan' => 0],
+            ['area_key' => 'keluarga', 'nama' => 'Keluarga', 'tipe' => 'keluarga', 'email' => 'nurilkhaira@gmail.com', 'family_id' => $familyId, 'urutan' => 0],
             ['area_key' => 'suami', 'nama' => 'Suami', 'tipe' => 'suami', 'email' => 'suami@keluarga.com', 'family_id' => $familyId, 'urutan' => 1],
-            ['area_key' => 'istri', 'nama' => 'Istri', 'tipe' => 'istri', 'email' => 'istri@keluarga.com', 'family_id' => $familyId, 'urutan' => 2],
+            ['area_key' => 'istri', 'nama' => 'Istri / Nuril Khaira', 'tipe' => 'istri', 'email' => 'nurilkhaira@gmail.com', 'family_id' => $familyId, 'urutan' => 2],
         ];
 
         foreach ($members as $m) {
@@ -40,6 +40,15 @@ class DatabaseSeeder extends Seeder
 
         // 3. Create Default Allowed Emails (Users)
         $accounts = [
+            [
+                'email' => 'nurilkhaira@gmail.com',
+                'nama' => 'Nuril Khaira',
+                'role' => 'leader',
+                'family_id' => $familyId,
+                'is_platform_admin' => true,
+                'status' => 'active',
+                'password' => Hash::make('password'),
+            ],
             [
                 'email' => 'suami@keluarga.com',
                 'nama' => 'Suami',
